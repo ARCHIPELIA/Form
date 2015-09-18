@@ -1,0 +1,19 @@
+{
+    "name": "atoll/form",
+    "authors": [
+        {
+            "name": "Archipelia",
+            "email": "tech@archipelia.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Atoll\\Form\\": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
