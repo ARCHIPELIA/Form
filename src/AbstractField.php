@@ -1,6 +1,7 @@
 <?php
 
 namespace Atoll\Form;
+use Atoll\Form\Helper;
 
 abstract class AbstractField
 {
