@@ -96,4 +96,9 @@ class InputCheckList extends AbstractFieldList
   {
     return $this->value;
   }
+
+  public function displayVal()
+  {
+
+  }
 }

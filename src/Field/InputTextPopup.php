@@ -10,7 +10,9 @@ class InputTextPopup extends AbstractFieldList
   protected $maxlength;
   protected $fieldReadOnly = false;
   protected $fieldDisabled = false;
+  protected $isMultiple    = false;
 
+  protected $pl_popup;
   protected $popup_url;
   protected $popup_name;
   protected $popup_w;
@@ -30,9 +32,17 @@ class InputTextPopup extends AbstractFieldList
     $this->maxlength = $maxlength;
   }
 
+  public function setMultiple($isMultiple = true)
+  {
+    $this->isMultiple = $isMultiple;
+  }
+
   /** parseVal **/
   public function parseVal($value)
   {
+    if(is_array($value)) {
+      return $value;
+    }
     return str_replace(array('<', '>', '"'), '', trim($value));
   }
 
@@ -47,6 +57,7 @@ class InputTextPopup extends AbstractFieldList
   {
     global $_PAGE;
     $BdD = new \SqlBdD();
+    $this->pl_popup = $pl_popup;
     $stmt = $BdD->SqlQuery("select mtb_reference, mtb_path, mtb_table, mtb_rech_popup, mtb_col_id, mtb_params from ref_mod_table where mtb_table = upper('" . oraText($pl_popup) . "')", '');
 
     if (($mtb = $BdD->SqlFetchRow($stmt)) == false)
@@ -154,10 +165,46 @@ class InputTextPopup extends AbstractFieldList
       return '<input type="text" class="input text' . ($this->isValid() ? '' : ' error') . '" id="' . $this->getId() . '" name="' . $this->getName() . '" size="' . $this->size . '" maxlength="' . $this->maxlength . '" value="' . $this->getFieldValue() . '"' . ($this->highlight ? ' onblur="unhighlight(this);" onfocus="highlight(this);"' : '') . ($this->popup_url != '' ? ' onkeydown="if (event.keyCode == 113) ' . $popup_lien . ';"' . ($this->popup_show_onchange ? ' onchange="' . $popup_lien . '; return false;"' : '') : '') .
       ($this->fieldReadOnly ? ' readonly="true"' : '') . ($this->fieldDisabled ? ' disabled="true"' : '') . ($this->options != '' ? ' ' . $this->options : '') . ($options != '' ? ' ' . $options : '') . ($this->comment != '' ? ' title="' . $this->comment . '"' : '') . '/>' .
       ($this->popup_img_off != '' ?
-        ' <a id="' . $this->getId() . '_popup" href="#"' . ($this->popup_url != '' ? ' onclick="' . $popup_lien . '; return false;"' : 'style="display: none"') .
-        ($this->popup_img_on != '' ? ' onmouseover="rub_ico_over(\'' . $this->getId() . '_img\');" onmouseout="rub_ico_out(\'' . $this->getId() . '_img\');" onfocus="rub_ico_over(\'' . $this->getId() . '_img\');" onblur="rub_ico_out(\'' . $this->getId() . '_img\');"' : '') .
-        '>' . showIco($this->popup_img_off, '', __("Raccourci F2"), 3, 'id="' . $this->getId() . '_img"') . '</a>'
-        : '');
+          ' <a id="' . $this->getId() . '_popup" href="#"' . ($this->popup_url != '' ? ' onclick="' . $popup_lien . '; return false;"' : 'style="display: none"') .
+          ($this->popup_img_on != '' ? ' onmouseover="rub_ico_over(\'' . $this->getId() . '_img\');" onmouseout="rub_ico_out(\'' . $this->getId() . '_img\');" onfocus="rub_ico_over(\'' . $this->getId() . '_img\');" onblur="rub_ico_out(\'' . $this->getId() . '_img\');"' : '') .
+          '>' . showIco($this->popup_img_off, '', __("Raccourci F2"), 3, 'id="' . $this->getId() . '_img"') . '</a>'
+          : '');
   }
+
+  public function displayVal()
+  {
+    $BdD   =  new \SqlBdD();
+
+    $stmt  =  $BdD->SqlQuery("select mtb_reference, mtb_path, mtb_table, mtb_detail_popup, mtb_col_id, mtb_col_ref, mtb_params from ref_mod_table where mtb_table = upper('". oraText($this->pl_popup) ."')", '');
+    if (($mtb = $BdD->SqlFetchRow($stmt)) == false)
+      throw new \RuntimeException( __("Popup <b>%s</b> inexistante !", $this->pl_popup));
+    $idMap = (is_array($this->getVal())) ? $this->getVal() : array("'" . $this->getVal() . "'");
+    if ($this->isMultiple === true) {
+      $idMap = array_map(function($val) { return "'" . $val . "'"; }, $this->getValues());
+    }
+    $stmt = $BdD->SqlQuery(sprintf('SELECT %s, %s FROM %s WHERE %s IN (%s)', $mtb['mtb_col_id'], $mtb['mtb_col_ref'], $mtb['mtb_table'], $mtb['mtb_col_id'], implode(', ', $idMap)));
+    $valeurs = array();
+    while ($row = $BdD->SqlFetchRow($stmt)) {
+      $valeurs[$row[$mtb['mtb_col_id']]] = $row[$mtb['mtb_col_ref']];
+    }
+    $url 	= PATH_ROOT_WEB . "/sysgestion/" . $mtb["mtb_path"] . "/" . $mtb["mtb_detail_popup"];
+    $args = array('rm_item' => 'FICHE');
+    $return = '<dl>';
+    foreach ($valeurs as $id => $ref) {
+      $args[$mtb['mtb_col_id']] = $id;
+      $return .= '<dt>' . $ref . ' ' . showPopupLink($url, $args, showico('ico_view.gif', '', __("Voir le détail")), '') . '</dt>';
+    }
+    $return .= '</dl>';
+    return $return;
+  }
+  public function getValues()
+  {
+    if ($this->isMultiple === false) {
+      return $this->getVal();
+    }
+    return explode(';', $this->getVal());
+  }
+
+
 
 }

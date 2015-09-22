@@ -41,4 +41,10 @@ class InputText extends AbstractFieldList
     ($this->readOnly ? ' readonly="true"' : '') . ($this->disabled ? ' disabled="true"' : '') .
     ($this->options != '' ? ' ' . $this->options : '') . ($options != '' ? ' ' . $options : '') . ($this->comment != '' ? ' title="' . $this->comment . '"' : '') . '/>';
   }
+
+  public function displayVal()
+  {
+    return $this->oraText();
+  }
+
 }

@@ -18,6 +18,8 @@ abstract class AbstractField
   protected $highlight = true;
   protected $comment = '';
 
+  protected $validator;
+
 
   /** Constructeur **/
   public function __construct($id, $title, $accessKey, $default, $name = '')
@@ -69,6 +71,7 @@ abstract class AbstractField
 
   public function getVal($html = false)
   {
+    if(is_array($this->value) && count($this->value) == 0) return '';
     return ($html ? str_replace(array("\r\n", "\n", "\r"), "<br>", $this->value) : $this->value);
   }
 
@@ -169,6 +172,11 @@ abstract class AbstractField
   public function validate($type, $requis, $taille_max, &$msg)
   {
     return $this->setValid(validate($this->value, $type, $requis, $taille_max, $msg));
+  }
+
+  public function validation(\Closure $callback)
+  {
+    $this->validator = $callback;
   }
 
   /** setUpperCase **/
