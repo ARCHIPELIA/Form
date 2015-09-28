@@ -8,20 +8,24 @@ use \Atoll\Form\AbstractFieldList;
 class InputRadioGroup extends AbstractFieldList
 {
   private $fields = array();
+
   public function __construct($id, $title, $accessKey, $options = array(), $value = '')
   {
     if (is_array($value)) {
       $value = $value[0];
     }
+
     if (count($options) == 1) {
       return new InputRadio($id, $title, $accessKey, $id, ($id === $value), $value);
     }
+
     $this->id     =  $id;
     $this->name   =  $id;
     $this->title  =  $title;
     foreach ($options as $key => $opt) {
       $this->fields[] = new InputRadio($key, $opt, $accessKey, $id, ($key == $value), $key);
     }
+
   }
   public function showField($options = '')
   {
@@ -32,6 +36,7 @@ class InputRadioGroup extends AbstractFieldList
     }
     return implode(' ', $fieldsTab);
   }
+
   public function oraText()
   {
     foreach ($this->fields as $field) {
@@ -40,11 +45,13 @@ class InputRadioGroup extends AbstractFieldList
       }
     }
   }
+
   // Radio group have only one value
   public function getValues()
   {
     return null;
   }
+
   public function getVal()
   {
     foreach ($this->fields as $radio) {
@@ -54,6 +61,7 @@ class InputRadioGroup extends AbstractFieldList
     }
     return null;
   }
+
   public function displayVal()
   {
     foreach ($this->fields as $radio) {

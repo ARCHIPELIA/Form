@@ -8,6 +8,7 @@ use Atoll\Form\AbstractFieldList;
 class InputCheckboxGroup extends AbstractFieldList
 {
   private $fields = array();
+
   public function __construct($id, $title = '', $accessKey = '', $options = array(), $default = array())
   {
     if (count($options) == 1) {
@@ -20,6 +21,7 @@ class InputCheckboxGroup extends AbstractFieldList
       $this->fields[] = new InputCheckbox($key, $opt, $accessKey, (in_array($key, $default) === true));
     }
   }
+
   public function showField($options = '')
   {
     $fieldsTab = array();
@@ -29,6 +31,7 @@ class InputCheckboxGroup extends AbstractFieldList
     }
     return implode(' ', $fieldsTab);
   }
+
   public function getValues()
   {
     $values = array();
@@ -39,6 +42,7 @@ class InputCheckboxGroup extends AbstractFieldList
     }
     return $values;
   }
+
   public function displayVal()
   {
     $return = array();

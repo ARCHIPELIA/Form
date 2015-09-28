@@ -17,6 +17,7 @@ class InputCalendar extends \Atoll\Form\AbstractField
   private $field 					= null;
   private $positionOpt		= self::POS_AUTO;
   private $dateFormatOpt	= self::FMT_FULL_DATE;
+
   private $validPosition = array(
       self::POS_BOT_RIGHT,
       self::POS_TOP_RIGHT,
@@ -24,16 +25,19 @@ class InputCalendar extends \Atoll\Form\AbstractField
       self::POS_TOP_LEFT,
       self::POS_AUTO,
   );
+
   private $validDateFormat = array(
       self::FMT_FULL_DATE,
       self::FMT_WEEK_YEAR,
       self::FMT_PERIOD_YEAR
   );
+
   public function __construct($id, $title = '', $accessKey = '', $size = 25, $maxlength = 100, $default = array())
   {
     $this->field = new InputText($id, $title, $accessKey, $size, $maxlength, $default);
     parent::__construct($id, $title, $accessKey, $default);
   }
+
   public function setPositionOpt($position)
   {
     if (!in_array($position, $this->validPosition)) {
@@ -41,6 +45,7 @@ class InputCalendar extends \Atoll\Form\AbstractField
     }
     $this->positionOpt = $position;
   }
+
   public function setDateFormatOpt($dateFormat)
   {
     if (!in_array($dateFormat, $this->validDateFormat)) {
@@ -48,6 +53,7 @@ class InputCalendar extends \Atoll\Form\AbstractField
     }
     $this->dateFormatOpt = $dateFormat;
   }
+
   public function showField($options = '')
   {
     $fieldsTab = array();
@@ -56,6 +62,7 @@ class InputCalendar extends \Atoll\Form\AbstractField
     $fieldsTab[] = showico('ico_calendar.gif', '', __("Calendrier"), 3, 'border="0" onClick="popUpCalendar(this, getEle(\'' . $this->field->getId() . '\'), ' . $this->positionOpt . ', ' . $this->dateFormatOpt . ')"');
     return implode(' ', $fieldsTab);
   }
+
   public function displayVal()
   {
     return $this->oraText();

@@ -202,6 +202,7 @@ class InputTextPopup extends AbstractFieldList
     if ($this->isMultiple === false) {
       return $this->getVal();
     }
+    if(is_array($this->getVal())) return $this->getVal();
     return explode(';', $this->getVal());
   }
 

@@ -7,6 +7,7 @@ class InputListe extends AbstractFieldList
 {
   protected $field 			= null;
   protected $field_sel	= null;
+
   public function __construct($id, $title = '', $accessKey = '', $values = array(), $default = array())
   {
     global $_PAGE;
@@ -26,14 +27,17 @@ class InputListe extends AbstractFieldList
     $_PAGE->addJavaScriptFiles("selectbox.js");
     parent::__construct($id, $title, $accessKey, $default);
   }
+
   public function getOnSubmitEventActions()
   {
     return 'selectAllOptions( getEle(\'' . $this->field_sel->getId() . '\') )';
   }
+
   /* parseVal */
   public function parseVal($value){
     return ($value == true);
   }
+
   public function showField($options = '')
   {
     return '
@@ -68,10 +72,12 @@ class InputListe extends AbstractFieldList
         </tr>
       </table>';
   }
+
   public function getValues()
   {
     return $this->field_sel->getVals();
   }
+
   public function displayVal()
   {
     $return = array();

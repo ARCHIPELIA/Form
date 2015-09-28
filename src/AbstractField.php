@@ -51,6 +51,8 @@ abstract class AbstractField
 
   protected function getFieldValue()
   {
+    if(is_array($this->value) && count($this->value) == 0) return '';
+    if(is_array($this->value) && count($this->value) == 1) return $this->value[0];
     return $this->value;
   }
 
@@ -209,6 +211,11 @@ abstract class AbstractField
     return array();
   }
 
+  public function getOnSubmitEventActions()
+  {
+    return null;
+  }
+
   /****************************************************************************/
   /** Valeur utilisable par Oracle                                           **/
 
@@ -230,5 +237,13 @@ abstract class AbstractField
   public function phpFloat()
   {
     return phpFloat($this->value);
+  }
+
+  public function isValidOD(&$msg)
+  {
+    $validator = $this->validator;
+    $isValid = $validator($this->value, $msg);
+    $this->setValid($isValid);
+    return $isValid;
   }
 }
